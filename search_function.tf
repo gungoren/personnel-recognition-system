@@ -38,6 +38,26 @@ resource "aws_lambda_function" "search_function" {
   }
 }
 
+data "aws_iam_policy_document" "search_role_policy" {
+  version = "2012-10-17"
+  statement {
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+      "rekognition:DescribeCollection",
+      "rekognition:SearchFacesByImage",
+      "dynamodb:GetItem",
+    ]
+    resources = [
+      "arn:aws:logs:*:*:*",
+      "arn:aws:rekognition:*:*:collection/${var.collection_id}",
+      "arn:aws:dynamodb:*:*:table/${local.table_name}"
+    ]
+  }
+}
+
 resource "aws_iam_role" "search_function" {
   name               = "faces-search-function-lambda-role"
   assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
@@ -46,5 +66,5 @@ resource "aws_iam_role" "search_function" {
 resource "aws_iam_role_policy" "search_function" {
   name   = "cloudwatch_search"
   role   = aws_iam_role.search_function.id
-  policy = data.aws_iam_policy_document.role_policy.json
+  policy = data.aws_iam_policy_document.search_role_policy.json
 }

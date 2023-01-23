@@ -3,6 +3,7 @@
 ## Installation
 
 ```
+terraform init
 terraform apply
 ```
 

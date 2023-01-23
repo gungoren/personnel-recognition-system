@@ -47,7 +47,7 @@ data "aws_iam_policy_document" "assume_role_policy" {
   }
 }
 
-data "aws_iam_policy_document" "role_policy" {
+data "aws_iam_policy_document" "index_role_policy" {
   version = "2012-10-17"
   statement {
     effect = "Allow"
@@ -56,10 +56,8 @@ data "aws_iam_policy_document" "role_policy" {
       "logs:CreateLogStream",
       "logs:PutLogEvents",
       "rekognition:DescribeCollection",
-      "rekognition:SearchFacesByImage",
       "rekognition:IndexFaces",
       "dynamodb:PutItem",
-      "dynamodb:GetItem",
       "s3:GetObject",
       "s3:ListBucket"
     ]
@@ -81,7 +79,7 @@ resource "aws_iam_role" "index_function" {
 resource "aws_iam_role_policy" "index_function" {
   name   = "cloudwatch_index"
   role   = aws_iam_role.index_function.id
-  policy = data.aws_iam_policy_document.role_policy.json
+  policy = data.aws_iam_policy_document.index_role_policy.json
 }
 
 resource "aws_lambda_permission" "s3_permission_to_trigger_lambda" {
