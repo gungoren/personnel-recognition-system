@@ -42,10 +42,10 @@ def lambda_handler(event, context):
         for collection_face in collection_faces:
             item = table.get_item(Key={'FaceId': collection_face.face_id})
             if "Item" in item:
-                result.append(item['Item'])
+                result.append(item['Item']["object_metadata"])
         return {
             'statusCode': 200,
-            'data': json.dumps(result, cls=DecimalEncoder)
+            'data': result
         }
     except Exception as e:
         print(e)
