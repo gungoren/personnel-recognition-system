@@ -1,18 +1,3 @@
-resource "aws_api_gateway_deployment" "apig_deployment" {
-  rest_api_id = aws_api_gateway_rest_api.api.id
-  stage_name  = var.api_stage_name
-
-  lifecycle {
-    create_before_destroy = true
-  }
-
-  depends_on = [
-    aws_api_gateway_resource.search,
-    aws_api_gateway_method.method,
-    aws_api_gateway_integration.integration
-  ]
-}
-
 resource "aws_api_gateway_rest_api" "api" {
   name = "recognition-api"
 }
@@ -57,4 +42,19 @@ resource "aws_lambda_permission" "search_function" {
 
   # More: http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-control-access-using-iam-policies-to-invoke-api.html
   source_arn = "arn:aws:execute-api:${var.region}:${data.aws_caller_identity.current.account_id}:${aws_api_gateway_rest_api.api.id}/*/${aws_api_gateway_method.method.http_method}${aws_api_gateway_resource.search.path}"
+}
+
+resource "aws_api_gateway_deployment" "apig_deployment" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  stage_name  = var.api_stage_name
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  depends_on = [
+    aws_api_gateway_resource.search,
+    aws_api_gateway_method.method,
+    aws_api_gateway_integration.integration
+  ]
 }
