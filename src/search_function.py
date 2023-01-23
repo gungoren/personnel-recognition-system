@@ -1,9 +1,7 @@
 import os
-import json
 import uuid
 import boto3
 import base64
-from decimal import Decimal
 from rekognition_image import RekognitionCollection, RekognitionImage
 
 rekognition = boto3.client('rekognition')
@@ -21,13 +19,6 @@ collection["CollectionId"] = COLLECTION_ID
 rekognition_collection = RekognitionCollection(collection, rekognition)
 
 table = dynamodb.Table(TABLE_ID)
-
-
-class DecimalEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, Decimal):
-            return float(obj)
-        return json.JSONEncoder.default(self, obj)
 
 
 def lambda_handler(event, context):
